@@ -2519,7 +2519,7 @@ body.eye-protect #forestMenu {
         muted: false,
         bgmMuted: false,
         bgmInterval: null,
-        bgmVol: 0.02,
+        bgmVol: 0.09,
         currentBgmStyle: 0,
 
         /** 初始化音频上下文 */
@@ -2612,8 +2612,13 @@ body.eye-protect #forestMenu {
             const style = styles[this.currentBgmStyle];
 
             this.bgmInterval = setInterval(() => {
-                if (this.bgmMuted || this.ctx.state === 'suspended') return;
-                const freq = style.notes[Math.floor(Math.random() * style.notes.length)] * (Math.random() > 0.4 ? 1 : (style.wave==='triangle'?0.5:2)); 
+                if (this.bgmMuted) return;
+                // 上下文被系统挂起（iOS 切后台、微信内置浏览器等）时尝试恢复
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                    return;
+                }
+                const freq = style.notes[Math.floor(Math.random() * style.notes.length)] * (Math.random() > 0.4 ? 1 : (style.wave==='triangle'?0.5:2));
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
                 osc.type = style.wave;
@@ -2637,7 +2642,7 @@ body.eye-protect #forestMenu {
 
         /** BGM压低（在朗读语音时使用） */
         duckBGM(duck) {
-            this.bgmVol = duck ? 0.002 : 0.02;
+            this.bgmVol = duck ? 0.015 : 0.09;
         }
     };
 
@@ -4848,6 +4853,13 @@ body.eye-protect #forestMenu {
         }
         initVoices();
     }, { once: true });
+
+    /** 每次触摸都尝试恢复被系统挂起的音频上下文（iOS/微信内核切后台后再回来） */
+    document.addEventListener('pointerdown', () => {
+        if (!AudioSys.bgmMuted && AudioSys.ctx && AudioSys.ctx.state === 'suspended') {
+            AudioSys.ctx.resume();
+        }
+    });
 
     /** 语音列表加载 */
     if ('speechSynthesis' in window) {
