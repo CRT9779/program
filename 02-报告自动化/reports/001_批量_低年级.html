@@ -8,8 +8,6 @@
   --report-line-height: 1.55;
 }
 
-}') format('woff2');
-}
 @page {
   size: A4;
   margin: 1cm 1cm 1cm 1cm;
@@ -108,6 +106,53 @@ strong {
     .report-table tr {
       page-break-inside: avoid;
     }
+  }
+</style>
+
+<style>
+  /* 手机端适配：版头改相对布局，表格取消不换行，避免字符重叠 */
+  @media (max-width: 800px) {
+    :root {
+      --report-title-size: 19px;
+      --report-content-size: 12.5px;
+    }
+    body { padding: 8px 6px; }
+    .report-page-header {
+      min-height: auto;
+      position: relative;
+      padding-bottom: 2px;
+      margin-bottom: 0.2cm;
+    }
+    .header-left {
+      position: relative;
+      left: 0; top: 0;
+      width: 28%; height: auto;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .header-icon {
+      position: relative;
+      left: 0; top: 0;
+      width: 66%; height: auto;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 2%;
+    }
+    .header-right-text {
+      position: relative;
+      top: 0; right: 0;
+      text-align: left;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .report-title { margin-bottom: 0.3cm; }
+    table, th, td, p, li, b, strong { font-size: 12.5px !important; line-height: 1.5; }
+    td, th {
+      white-space: normal !important;
+      word-break: break-word;
+      padding: 6px 4px !important;
+    }
+    img { max-width: 100% !important; height: auto !important; }
   }
 </style>
 
