@@ -248,7 +248,7 @@ input:focus, select:focus {
 
 /* ============================================================
    手机端适配
-   竖屏：提示横屏使用（背景按 cover 展示，热区隐藏）
+   竖屏：背景按 cover 展示，使用竖向按钮菜单
    横屏：保留背景热区点击交互（容器按 16:9 等比铺满）
    ============================================================ */
 .mobile-menu {
@@ -270,52 +270,15 @@ input:focus, select:focus {
     box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
-.rotate-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 5000;
-    background: rgba(18, 32, 8, 0.82);
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 24px;
-}
-
-.rotate-card {
-    background: rgba(255, 255, 255, 0.96);
-    color: var(--text-dark);
-    border-radius: var(--radius-lg);
-    padding: 36px 28px;
-    max-width: 320px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-}
-
-.rotate-title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-top: 12px;
-}
-
-.rotate-desc {
-    font-size: 14px;
-    color: var(--text-mid);
-    margin-top: 10px;
-    line-height: 1.7;
-}
-
 @media (max-width: 768px) and (orientation: portrait) {
-    /* 仅在主菜单竖屏时提示横屏（其它页面正常竖屏使用） */
-    #forestMenu.active ~ #rotateOverlay {
-        display: flex;
-    }
     /* 竖屏下背景保持比例裁剪，不压扁 */
     #forestMenu, #academyMenu, #letterLearnView, #pinyinLearnView, #trainingMenu, #configPanel, #gamePlayArea, #levelSelector,
     #reportView, #profileView, #achievementView, #settingsView, #historyArea {
         background-size: cover !important;
     }
-    /* 竖屏热区点位与裁剪后的背景不对应，隐藏 */
+    /* 竖屏热区点位与裁剪后的背景不对应，隐藏并改用竖向菜单 */
     .hotzone-btn { display: none !important; }
+    .mobile-menu { display: flex; }
     .forest-title {
         top: 56px !important;
     }
@@ -341,9 +304,6 @@ input:focus, select:focus {
 }
 
 @media (max-width: 900px) and (orientation: landscape) {
-    .rotate-overlay {
-        display: none !important;
-    }
     /* 主菜单按背景图 16:9 等比铺满，热区坐标与画面精确对应 */
     #forestMenu {
         height: 56.25vw;
@@ -1727,23 +1687,13 @@ body.eye-protect #forestMenu {
         <div class="hotzone-btn" style="left: 63.0%; top: 65.0%; width: 12.5%; height: 9.5%;" onclick="showView('profileView')" title="我的中心"></div>
         <!-- 5. 历史记录 -->
         <div class="hotzone-btn" style="left: 85.0%; top: 59.0%; width: 11.5%; height: 9.5%;" onclick="showView('historyArea')" title="历史记录"></div>
-        <!-- 手机竖屏兜底菜单（点击「仍要竖屏浏览」后出现） -->
+        <!-- 手机竖屏：竖向按钮菜单（热区仅横屏显示） -->
         <div class="mobile-menu">
             <button class="start-btn" onclick="showView('academyMenu')">📖 字母学堂</button>
             <button class="start-btn" onclick="showView('trainingMenu')">🎮 训练场</button>
             <button class="start-btn" onclick="showView('reportView')">📊 学习报告</button>
             <button class="start-btn" onclick="showView('profileView')">👤 我的中心</button>
             <button class="start-btn" onclick="showView('historyArea')">📚 历史记录</button>
-        </div>
-    </div>
-
-    <!-- 手机竖屏：横屏使用提示 -->
-    <div id="rotateOverlay" class="rotate-overlay">
-        <div class="rotate-card">
-            <div style="font-size:56px;">🔄</div>
-            <div class="rotate-title">请旋转手机，横屏体验</div>
-            <div class="rotate-desc">拼音字母秘境是为横屏设计的森林场景，<br>横屏后点击画面上的图标即可进入各区域</div>
-            <button class="start-btn" style="margin-top:18px;" onclick="dismissRotateOverlay()">仍要竖屏浏览</button>
         </div>
     </div>
 
@@ -4730,15 +4680,6 @@ body.eye-protect #forestMenu {
         }
     };
     window.ThemeManager = ThemeManager;
-
-    /** 关闭横屏提示，改用竖屏兜底菜单继续浏览 */
-    function dismissRotateOverlay() {
-        const ov = $('rotateOverlay');
-        if (ov) ov.style.display = 'none';
-        const mm = document.querySelector('.mobile-menu');
-        if (mm) mm.style.display = 'flex';
-    }
-    window.dismissRotateOverlay = dismissRotateOverlay;
 
     /* ============================================================
        模块17: 历史记录
