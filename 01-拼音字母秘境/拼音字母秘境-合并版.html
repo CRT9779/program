@@ -2517,7 +2517,7 @@ body.eye-protect #forestMenu {
     const AudioSys = {
         ctx: null,
         muted: false,
-        bgmMuted: true,
+        bgmMuted: false,
         bgmInterval: null,
         bgmVol: 0.02,
         currentBgmStyle: 0,
@@ -4839,9 +4839,13 @@ body.eye-protect #forestMenu {
         }
     });
 
-    /** 首次交互时初始化音频 */
-    document.addEventListener('click', () => {
+    /** 首次交互时初始化音频并自动播放背景音乐（浏览器自动播放策略要求用户手势） */
+    document.addEventListener('click', (e) => {
         AudioSys.init();
+        // 默认开启 BGM；但若用户第一下就点了 BGM 按钮（想关掉），尊重其操作
+        if (!AudioSys.bgmMuted && !(e.target.closest && e.target.closest('#btnBGM'))) {
+            AudioSys.playBGM();
+        }
         initVoices();
     }, { once: true });
 
@@ -4859,6 +4863,12 @@ body.eye-protect #forestMenu {
     /** 应用启动 */
     function initApp() {
         initVoices();
+
+        // BGM 默认开启：同步工具栏按钮状态
+        if (!AudioSys.bgmMuted) {
+            $('btnBGM').textContent = '🎶';
+            $('btnBGM').classList.add('active');
+        }
 
         // 无当前用户时才弹角色选择器（含「游客体验」一键入口）
         const user = UserManager.getCurrentUser();
