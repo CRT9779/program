@@ -1,0 +1,395 @@
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><rect width=%27100%27 height=%27100%27 rx=%2722%27 fill=%27%237E2FA8%27/></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root {
+  --report-title-size: 28px;
+  --report-content-size: 16px;
+  --report-line-height: 1.55;
+}
+
+}') format('woff2');
+}
+@page {
+  size: A4;
+  margin: 1cm 1cm 1cm 1cm;
+}
+
+body {
+  margin: 0;
+  font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: var(--report-content-size);
+  line-height: var(--report-line-height);
+}
+
+.report-title {
+  text-align: center;
+  font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: var(--report-title-size);
+  line-height: 1.25;
+  margin-top: 0;
+  margin-bottom: 0.5cm;
+  padding-bottom: 0;
+  /* remove the line under the title */
+  border-bottom: none !important;
+}
+
+.report-table {
+  font-size: var(--report-content-size);
+}
+
+table,
+th,
+td,
+p,
+li,
+b,
+strong {
+  font-size: var(--report-content-size) !important;
+  line-height: var(--report-line-height);
+}
+
+.report-page-header {
+  position: relative;
+  margin-bottom: 0.38cm;
+  min-height: 2.86cm;
+  border-bottom: 1px solid #000;
+}
+
+.header-left,
+
+.header-icon {
+  display: block;
+  position: absolute;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.header-left {
+  top: 0;
+  left: -1.4cm;
+  width: 4.73cm;
+  height: 2.86cm;
+}
+
+.header-icon {
+  top: 0.6cm;
+  left: 2cm;
+  width: 9.68cm;
+  height: 2.03cm;
+}
+
+.header-right-text {
+  position: absolute;
+  top: 0.9cm;
+  right: 0;
+  font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: var(--report-content-size);
+  line-height: 1.35;
+  text-align: right;
+  color: #1f1f1f;
+}
+</style>
+
+<style>
+  @media print {
+    /* Fallback fonts specifically for printing */
+    .report-table, .report-table th, .report-table td {
+      font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+    }
+    
+    /* Force background colors to print */
+    .report-table {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Prevent rows from breaking in half across pages */
+    .report-table tr {
+      page-break-inside: avoid;
+    }
+  }
+</style>
+
+<!-- Header -->
+<div class="report-page-header" style="font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+<img class="header-left" src="assets/页眉1.png" alt="left logo">
+<img class="header-icon" src="assets/页眉2.png" alt="site icon">
+<div class="header-right-text" style="font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">儿童综合读写能力测试<br>分析报告</div>
+</div>
+
+<!-- Title -->
+
+<h1 class="report-title">儿童综合读写能力评估报告</h1>
+
+<table class="report-table" style="width: 100%; border-collapse: collapse; table-layout: fixed; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+  <tr style="background-color: #9287D3; color: white; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+    <th align="center" colspan="6" style="padding: 5px;">个人信息 INFORMATION</th>
+  </tr>
+
+  <tr>
+    <td colspan="6" style="height: 20px; padding: 0; border: none; background: white;"></td>
+  </tr>
+
+  <tr style="background-color: white;">
+    <td style="padding: 12px; width: 10%; border: 1px solid black;">姓名</td>
+    <td style="padding: 12px; width: 23%; border: 1px solid black;">004</td>
+    <td style="padding: 12px; width: 10%; white-space: nowrap; border: 1px solid black;">性别</td>
+    <td style="padding: 12px; width: 23%; border: 1px solid black;">女</td>
+    <td style="padding: 12px; width: 10%; white-space: nowrap; border: 1px solid black;">年龄</td>
+    <td style="padding: 12px; width: 23%; border: 1px solid black;">9</td>
+  </tr>
+
+  <tr style="background-color: white;">
+    <td style="padding: 12px; white-space: nowrap; border: 1px solid black;">学校</td>
+    <td style="padding: 12px; border: 1px solid black;">xx公立小学</td>
+    <td style="padding: 12px; white-space: nowrap; border: 1px solid black;">年级</td>
+    <td style="padding: 12px; border: 1px solid black;">三年级</td>
+    <td style="padding: 12px; white-space: nowrap; border: 1px solid black;">测试日期</td>
+    <td style="padding: 12px; border: 1px solid black;">2024-7-8</td>
+  </tr>
+</table>
+
+<br>
+
+<table class="report-table" style="width: 100%; border-collapse: collapse; table-layout: fixed; margin: 0; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+  <tr style="background-color: #9287D3; color: white; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+    <th colspan="6" style="padding: 5px;">综合评估情况 ACHIEVEMENT</th>
+  </tr>
+    <tr>
+    <td colspan="6" style="height: 20px; padding: 0; border: none; background: white;"></td>
+    </tr>
+  <tr style="background-color: white">
+    <td style="padding: 10px; width: 20%; text-align: center; vertical-align: middle; border: 1px solid black">综合读写能力</td>
+    <td style="padding: 10px; width: 20%; text-align: center; vertical-align: middle; border: 1px solid black">
+      <b style="color: #9287D3;">1分</b>
+    </td>
+    <td colspan="4" style="padding: 10px; width: 60%; border: 1px solid black">
+      说明：本评分采取0-6分制，分数越高代表儿童的能力越强。
+    </td>
+  </tr>
+  <tr>
+    <td colspan="6" style="padding: 15px; line-height: 1.6; border: 1px solid black; background-color: white">
+      <div style="text-align: center; margin: 10px 0;"></div>
+      <p style="text-indent: 2em; margin: 0 10px 10px 10px;">
+        经初步评估，该儿童的综合读写能力可能有重度发展迟缓或障碍，其字词识读、句段阅读、汉字书写、语法等维度有待提升。
+      </p>
+      <div style="margin-top: 15px; display: flex; justify-content: space-around;">
+        <div style="width: 45%; height: 200px; border: 1px dashed #9287D3; background-color: #f9f9f9; display: flex; align-items: center; justify-content: center; color: #9287D3; font-size: 14px;">[预留图片位置 1]</div>
+        <div style="width: 45%; height: 200px; border: 1px dashed #9287D3; background-color: #f9f9f9; display: flex; align-items: center; justify-content: center; color: #9287D3; font-size: 14px;">[预留图片位置 2]</div>
+      </div>
+    </td>
+  </tr>
+</table>
+<table class="report-table" style="width: 100%; border-collapse: collapse; margin: -1px 0 0 0; text-align: left; table-layout: fixed; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+  <tbody>
+    <tr style="border: 1px solid #e2d9f3;">
+      <td style="padding: 12px; width: 10%; white-space: nowrap; border: 1px solid black;">出具时间</td>
+      <td style="padding: 12px; width: 23%; border: 1px solid black;">2026-05-21</td>
+      <td style="padding: 12px; width: 10%; white-space: nowrap; border: 1px solid black;">出具人员</td>
+      <td style="padding: 12px; width: 23%; border: 1px solid black;">系统自动生成</td>
+      <td style="padding: 12px; width: 10%; white-space: nowrap; border: 1px solid black;">审核人员</td>
+      <td style="padding: 12px; width: 23%; border: 1px solid black;">系统管理员</td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<div style="page-break-before: always;"></div>
+<table class="report-table" style="width: 100%; border-collapse: collapse; table-layout: fixed; margin: 0; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+    <colgroup>
+      <col style="width: 100%;">
+    </colgroup>
+    <tr style="background-color: #9287D3; color: white; text-align: center;">
+      <th colspan="1" style="padding: 5px; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">初步评估结果 PRELIMINARY ASSESSMENT RESULTS</th>
+    </tr>
+    <tr>
+    <td colspan="1" style="height: 20px; padding: 0; border: none; background: white;"></td>
+    </tr>
+    <tr>
+      <td align="center" style="padding: 10px; background-color: white; border: 1px solid black;">
+        <b style="color: #8563CA; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">> 字词识读能力</b>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 20px; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.5; background-color: white;border: 1px solid black;">
+        <p style="text-indent: 2em; margin: 0 10px 10px 10px;">
+          儿童字词识读部分得分为46分（33.1%），整体表现低于同龄儿童常规发展水平，在字音识别、字义掌握等方面有待提升。
+        </p>
+        <ul style="margin-top: 5px; margin-bottom: 5px;">
+            <li><strong>字音识别维度：</strong>存在错误，儿童在字音识别上存在混淆。
+            <br><span style="color:#d9534f;white-space: nowrap;">[典型错误]：</span> 认为“啸”和“肃”同音</li>
+            <li><strong>字形识别维度：</strong>儿童能够准确识别常见字的字形，辨析能力良好。</li>
+            <li><strong>字义掌握维度：</strong>存在多义字混淆等情况，在词汇辨别与词义理解上存在偏差。
+            <br><span style="color:#d9534f;white-space: nowrap;">[典型错误]：</span> 未能区分出“种类”和“播种”中“种”的含义；未能区分出“白手起家”和“白费力气”中“白”的含义</li>
+            <li><strong>词汇知识和组词能力维度：</strong>词汇储备丰富，组词能力强，判断词语正误准确。</li>
+        </ul>
+      </td>
+    </tr>
+</table>
+
+<table style="width: 100%; border-collapse: collapse; margin: -1px 0 0 0; text-align: left; table-layout: fixed;">
+    <tr>
+      <td align="center" style="padding: 10px; border: 1px solid black;">
+        <b style="color: #8563CA; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">> 阅读理解</b>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 20px; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.5; background-color: white; border: 1px solid black;">
+        <p style="text-indent: 2em; margin: 0 10px 10px 10px;">
+          儿童阅读理解部分得分为49分（47.1%），整体表现低于同龄儿童常规发展水平，在细节提取、主旨理解等方面有待提升。
+        </p>
+        <ul style="margin-top: 5px; margin-bottom: 5px;">
+          <li><strong>细节提取：</strong>难以从文本篇章中提取出所需信息，存在较多理解偏差。</li>
+          <li><strong>主旨理解：</strong>难以归纳文章思想主旨，存在较多理解偏差。</li>
+        </ul>
+      </td>
+    </tr>
+</table>
+
+<div style="page-break-before: always;"></div>
+<table style="width: 100%; border-collapse: collapse; margin: -1px 0 0 0; text-align: left; table-layout: fixed;">
+    <tr>
+      <td align="center" style="padding: 10px; border: 1px solid black;">
+        <b style="color: #8563CA; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">> 汉字书写能力</b>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 20px; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.5; background-color: white; border: 1px solid black;">
+        <p style="text-indent: 2em; margin: 0 10px 10px 10px;">
+          儿童汉字书写部分得分为47分（39.8%），整体表现低于同龄儿童常规发展水平，在书写质量、减少书写错误等方面有待提升。
+        </p>
+        <p style="text-indent: 0em; margin: 0 10px 5px 10px;"><strong>总体书写质量：</strong>总体而言，儿童的书写字迹正常。</p>
+        <p style="text-indent: 0em; margin: 0 10px 5px 10px;"><strong>字形提取：</strong>暂未观察到字形提取失败情况。</p>
+        <p style="text-indent: 0em; margin: 0 10px 5px 10px;"><strong>书写错误：</strong>在书写产出中存在较多（9个及以上）单字书写错误，在各维度表现如下：</p>
+        <ul style="margin-top: 5px; margin-bottom: 5px;">
+          <li>
+            <strong>笔画维度：</strong>
+            
+            <br>
+            <br><span style="color:#d9534f;white-space: nowrap;">[典型错误]：</span>
+            存在增添笔画，如“冰”写成<img src="../screenshots/004_ca4dccdf/单字_增添笔画/冰_1775211993290.png" alt="增添笔画截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“味”写成<img src="../screenshots/004_ca4dccdf/单字_增添笔画/味_1775212060821.png" alt="增添笔画截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            <br>存在删减笔画，如“夏”写成<img src="../screenshots/004_ca4dccdf/单字_删减笔画/夏_1775211937990.png" alt="删减笔画截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“没”写成<img src="../screenshots/004_ca4dccdf/单字_删减笔画/没_1775211670088.png" alt="删减笔画截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“莓”写成<img src="../screenshots/004_ca4dccdf/单字_删减笔画/莓_1775212027490.png" alt="删减笔画截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“西”写成<img src="../screenshots/004_ca4dccdf/单字_删减笔画/西_1775211722357.png" alt="删减笔画截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“部”写成<img src="../screenshots/004_ca4dccdf/单字_删减笔画/部_1775211355716.png" alt="删减笔画截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            <br>存在断笔不当，如“东”写成<img src="../screenshots/004_ca4dccdf/单字_断笔不当/东_1775211645320.png" alt="断笔不当截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“倍”写成<img src="../screenshots/004_ca4dccdf/单字_断笔不当/倍_1775211293970.png" alt="断笔不当截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“味”写成<img src="../screenshots/004_ca4dccdf/单字_断笔不当/味_1775212048150.png" alt="断笔不当截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“果”写成<img src="../screenshots/004_ca4dccdf/单字_断笔不当/果_1775212075238.png" alt="断笔不当截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“部”写成<img src="../screenshots/004_ca4dccdf/单字_断笔不当/部_1775211355716.png" alt="断笔不当截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“陪”写成<img src="../screenshots/004_ca4dccdf/单字_断笔不当/陪_1775211254131.png" alt="断笔不当截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            <br>存在长短有误，如“东”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/东_1775211645320.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“倍”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/倍_1775211293970.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“冰”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/冰_1775211993290.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“味”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/味_1775212048150.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“因”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/因_1775211948456.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“培”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/培_1775211274078.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“有”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/有_1775211706774.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“果”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/果_1775212075238.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“清”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/清_1775211410707.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“能”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/能_1775211964607.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“赔”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/赔_1775211335178.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“部”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/部_1775211355716.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“陪”写成<img src="../screenshots/004_ca4dccdf/单字_长短有误/陪_1775211254131.png" alt="长短有误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            <br>存在笔画粘连，如“东”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/东_1775211645320.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“倍”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/倍_1775211293970.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“味”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/味_1775212048150.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“因”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/因_1775211948456.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“培”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/培_1775211274078.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“夏”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/夏_1775211937990.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“有”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/有_1775211706774.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“果”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/果_1775212075238.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“没”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/没_1775211670088.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“清”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/清_1775211410707.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“激”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/激_1775212007177.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“能”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/能_1775211964607.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“莓”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/莓_1775212027490.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“西”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/西_1775211722357.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“赔”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/赔_1775211335178.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“部”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/部_1775211355716.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“陪”写成<img src="../screenshots/004_ca4dccdf/单字_笔画粘连/陪_1775211254131.png" alt="笔画粘连截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            <br>
+            
+          </li>
+          <li>
+            <strong>部件维度：</strong>
+            
+            <br>
+            <br><span style="color:#d9534f;white-space: nowrap;">[典型错误]：</span>
+            存在字形结构错误，如“东”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/东_1775211645320.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“倍”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/倍_1775211293970.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“冰”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/冰_1775211993290.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“培”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/培_1775211274078.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“有”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/有_1775211706774.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“没”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/没_1775211670088.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“激”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/激_1775212007177.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“能”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/能_1775211964607.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“莓”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/莓_1775212027490.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“赔”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/赔_1775211335178.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“部”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/部_1775211355716.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“陪”写成<img src="../screenshots/004_ca4dccdf/单字_字形结构错误/陪_1775211254131.png" alt="字形结构错误截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            <br>存在部件分离，如“倍”写成<img src="../screenshots/004_ca4dccdf/单字_部件分离/倍_1775211293970.png" alt="部件分离截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“冰”写成<img src="../screenshots/004_ca4dccdf/单字_部件分离/冰_1775211993290.png" alt="部件分离截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“味”写成<img src="../screenshots/004_ca4dccdf/单字_部件分离/味_1775212048150.png" alt="部件分离截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“清”写成<img src="../screenshots/004_ca4dccdf/单字_部件分离/清_1775211410707.png" alt="部件分离截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“激”写成<img src="../screenshots/004_ca4dccdf/单字_部件分离/激_1775212007177.png" alt="部件分离截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“能”写成<img src="../screenshots/004_ca4dccdf/单字_部件分离/能_1775211964607.png" alt="部件分离截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“赔”写成<img src="../screenshots/004_ca4dccdf/单字_部件分离/赔_1775211335178.png" alt="部件分离截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“部”写成<img src="../screenshots/004_ca4dccdf/单字_部件分离/部_1775211355716.png" alt="部件分离截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            <br>
+            <br>存在顺序颠倒，如“夏”写成<img src="../screenshots/004_ca4dccdf/单字_顺序颠倒/夏_1775211937990.png" alt="顺序颠倒截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            
+          </li>
+          <li>
+            <strong>汉字维度：</strong>
+            
+            
+            <br><span style="color:#d9534f;white-space: nowrap;">[典型错误]：</span>
+            存在形近字混淆，如“倍”写成<img src="../screenshots/004_ca4dccdf/单字_形近字混淆/倍_1775211293970.png" alt="形近字混淆截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“培”写成<img src="../screenshots/004_ca4dccdf/单字_形近字混淆/培_1775211274078.png" alt="形近字混淆截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“部”写成<img src="../screenshots/004_ca4dccdf/单字_形近字混淆/部_1775211355716.png" alt="形近字混淆截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">；“陪”写成<img src="../screenshots/004_ca4dccdf/单字_形近字混淆/陪_1775211254131.png" alt="形近字混淆截图" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">。
+            
+            
+            
+          </li>
+        </ul>
+      </td>
+    </tr>
+</table>
+
+
+<div style="page-break-before: always;"></div>
+<table style="width: 100%; border-collapse: collapse; margin: -1px 0 0 0; text-align: left; table-layout: fixed;">
+  <tr>
+    <td align="center" style="padding: 10px; border: 1px solid black;">
+      <b style="color: #8563CA; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">> 句段书写能力</b>
+    </td>
+  </tr>
+
+<tr>
+  <td style="padding: 10px 20px; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.5; background-color: white; border: 1px solid black;">
+    <p style="text-indent: 2em; margin: 0 10px 10px 10px;">
+      儿童句段书写部分得分为57分（76.9%），整体表现相当于同龄儿童常规发展水平，在减少书写错误、书写空间质量等方面可进一步提升。
+    </p>
+    <ul style="margin-top: 5px; margin-bottom: 5px;">
+      <li>
+        <strong>句子书写错误：</strong>
+        
+        
+        <br><span style="color:#d9534f;white-space: nowrap;">[典型错误]：</span>
+        
+        
+          存在字序颠倒，如“<img src="../screenshots/004_ca4dccdf/句子_字序颠倒/句子1_1775213215020.png" alt="句子_字序颠倒截图" style="width: 180px; height: 60px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">”。
+          
+        
+        
+        
+        
+          <br>存在空间分布不均，如“<img src="../screenshots/004_ca4dccdf/句子_空间分布不均/句子2_1775213329802.png" alt="句子_空间分布不均截图" style="width: 180px; height: 60px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">”；“<img src="../screenshots/004_ca4dccdf/句子_空间分布不均/句子3_1775213365089.png" alt="句子_空间分布不均截图" style="width: 180px; height: 60px; object-fit: contain; vertical-align: middle; margin: 0 6px 6px 6px;">”。
+          
+        
+        
+        
+        
+      </li>
+      <li>
+        <strong>整体书写质量：</strong>单字大小均匀性不均匀，字间距不恰当，不能保持行水平，较多行倾斜情况，行间距不恰当。不能保持左对齐。未出现超格或超线的情况，文字不能匹配格线。
+      </li>
+    </ul>
+    <p style="text-indent: 0em; margin: 0 10px 10px 10px;">
+    </p>
+  </td>
+</tr>
+
+  
+
+
+<table class="report-table" style="display: table; width: 100%; min-width: 100%; max-width: 100%; box-sizing: border-box; border-collapse: collapse; margin: -1px 0 0 0; text-align: left; table-layout: fixed; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+    <colgroup><col style="width: 100%;"></colgroup>
+    <tr>
+      <td align="center" style="width: 100%; padding: 10px; border: 1px solid black;">
+        <b style="color: #8563CA; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">> 书面表达能力</b>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 100%; padding: 10px 20px; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.5; background-color: white; border: 1px solid black;">
+        <p style="text-indent: 2em; margin: 0 10px 10px 10px;">
+          儿童书面表达能力部分得分为50分（50.7%），整体表现相当于同龄儿童常规发展水平，在语量、逻辑、相关性、语义、形式、卷面等方面可进一步提升。表现如下：
+        </p>
+        <ul style="margin-top: 5px; margin-bottom: 5px;">
+          <li><strong>语量：</strong>语量偏少，未达到题目要求。</li>
+          <li><strong>篇章逻辑：</strong>逻辑与连贯性较差；篇幅过短未能体现长句间连贯程度。</li>
+          <li><strong>相关性：</strong>内容基本切题，合理性基本合理；作答基本完整，基本完成。</li>
+          <li><strong>语义：</strong>表意清晰度较低，受其汉字书写能力限制，有所下降；内容过于单薄，未能展开叙述。</li>
+          <li><strong>形式：</strong>语法存在错误，见"语法能力"一栏；表达方法单一，未能运用比喻、拟人等修辞技巧。</li>
+          <li><strong>卷面：</strong>书写不够工整。</li>
+        </ul>
+      </td>
+    </tr>
+</table>
+
+<table style="width: 100%; border-collapse: collapse; margin: -1px 0 0 0; text-align: left; table-layout: fixed;">
+<tr>
+    <td align="center" style="padding: 10px; border: 1px solid black;">
+      <b style="color: #8563CA; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif;">> 语法能力</b>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="padding: 10px 20px; font-family: 'OPPO Sans 4.0', 'PingFang SC', 'Microsoft YaHei', sans-serif; line-height: 1.5; background-color: white; border: 1px solid black;">
+      <p style="text-indent: 2em; margin: 0 10px 10px 10px;">
+        儿童语法能力部分得分为46分（33.4%），整体表现低于同龄儿童常规发展水平，在连词成句、自主使用等方面有待提升。
+      </p>
+      <ul style="margin-top: 5px; margin-bottom: 5px;">
+        <li><strong>连词成句：</strong>未能完全正确完成连词成句任务，第二句存在遗漏成分（增字或漏字）；能够正确选择语序更自然的存在句“蓝蓝的天空上一朵朵白云飘着”。</li>
+        <li><strong>自主使用：</strong>在书面表达中，句子产出能力偏低。未能完全正确使用主谓、动宾的基础语法结构，但语法复杂度偏低，未能熟练掌握定中、兼语、连谓、中补等结构以提升语法复杂度，并存在 2 处书面语法错误。</li>
+      </ul>
+    </td>
+  </tr>
+</table>

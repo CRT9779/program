@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>读写量表批注</title>
+    <link rel="icon" href="images/icon.png" type="image/png">
+    <link rel="stylesheet" href="css/marking.css">
+    <style>
+        /* ===== 静态演示横幅：仅新增数据说明，不改变原有布局与配色 ===== */
+        .demo-banner {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            box-sizing: border-box;
+            padding: 5px 12px;
+            background: #f3f0ff;
+            border-bottom: 1px solid #e3dcf9;
+            color: #5b4d8a;
+            font-size: 12px;
+            line-height: 1.5;
+            letter-spacing: 0.3px;
+            text-align: center;
+        }
+
+        .demo-banner::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #8b7bd8;
+            flex-shrink: 0;
+        }
+
+        .jd-group {
+            flex-wrap: nowrap !important;
+            gap: 5px !important;
+        }
+
+        .jd-group label {
+            padding: 4px 10px !important;
+            min-width: 14px !important;
+        }
+
+        .jd-label {
+            width: 105px;
+            flex-shrink: 0;
+            text-align: left;
+            margin-right: 5px;
+            white-space: nowrap;
+        }
+
+        .nav-group-right {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #panel-low .subj-stats .stat-label {
+            flex: 0 0 7em;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="demo-banner">演示模式 · 数据为虚构样例，标注结果仅保存在本机浏览器</div>
+    <div class="top-bar">
+        <div class="nav-row">
+            <div class="nav-group-left">
+                <button class="btn btn-gray" onclick="history.back()">返回上页</button>
+
+                <div class="search-container">
+                    <input type="text" id="search-input" class="form-input" placeholder="输入姓名搜索..."
+                        oninput="handleSearch(this.value)" style="width: 140px; border-color: var(--primary);">
+                    <div id="search-results" class="search-results-dropdown"></div>
+                </div>
+
+                <button class="btn btn-purple" onclick="changeStudent(-1)">❮ 上一份</button>
+                <div class="counter-badge page-jumper">
+                    <input type="number" id="stu-jump-input" class="jump-input" value="1"
+                        onkeydown="if(event.key === 'Enter') this.blur();" onblur="executeJump(this)">
+                    <span id="stu-total-count" style="color:#a4b0be; font-weight:600;">/ -</span>
+                </div>
+                <button class="btn btn-purple" onclick="changeStudent(1)">下一份 ❯</button>
+            </div>
+            <div class="nav-group-right">
+                <button class="btn btn-green" onclick="downloadAllScreenshots(this)">下载全部截图</button>
+                <button id="export-excel-btn" class="btn btn-green" onclick="exportExcel()" title="演示模式下导出当前浏览器中的 JSON 数据">导出 Excel</button>
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="form-item"><span class="form-label">编号</span><input id="s_id" class="form-input" readonly></div>
+            <div class="form-item"><span class="form-label">姓名</span><input id="s_name" class="form-input"></div>
+            <div class="form-item"><span class="form-label">性别</span><select id="s_gender" class="form-input">
+                    <option value=""></option>
+                    <option value="女">女</option>
+                    <option value="男">男</option>
+                </select></div>
+            <div class="form-item"><span class="form-label">年龄</span><input id="s_age" class="form-input" type="number"
+                    min="0"></div>
+            <div class="form-item"><span class="form-label">民族</span><input id="s_nation" class="form-input"></div>
+            <div class="form-item" style="grid-column: span 1;"><span class="form-label">学校</span><input id="s_school"
+                    class="form-input"></div>
+            <div class="form-item">
+                <span class="form-label">年级</span>
+                <select id="s_grade" class="form-input" onchange="autoSwitchVersion()">
+                    <option value="">请选择</option>
+                    <option value="一年级">一年级</option>
+                    <option value="二年级">二年级</option>
+                    <option value="三年级">三年级</option>
+                    <option value="四年级">四年级</option>
+                    <option value="五年级">五年级</option>
+                    <option value="六年级">六年级</option>
+                </select>
+            </div>
+            <div class="form-item"><span class="form-label">班级</span><input id="s_class" class="form-input"></div>
+            <div class="form-item col-span-2">
+                <span class="form-label">测试日期 (年-月-日)</span>
+                <div class="date-group">
+                    <input type="number" id="s_date_year" class="date-input" placeholder="年" min="1">
+                    <input type="number" id="s_date_month" class="date-input" placeholder="月" min="1" max="12">
+                    <input type="number" id="s_date_day" class="date-input" placeholder="日" min="1" max="31">
+                </div>
+            </div>
+            <div class="form-item"><span class="form-label">主试</span><input id="s_tester" class="form-input"></div>
+            <div class="form-item"><span class="form-label">标注员</span><input id="s_annotator" class="form-input"></div>
+            <div class="form-item"><span class="form-label">最终得分总分</span><input id="s_total" class="form-input" readonly
+                    style="color:var(--primary); font-size:15px; font-weight:bold; background:#e6fffa; border-color:#b2f2bb;">
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="left-panel" id="img-container">
+            <div id="zoom-wrapper">
+                <img id="exam-image" src="" alt="请上传PDF">
+                <div id="crop-overlay"></div>
+                <div id="crop-box"></div>
+            </div>
+            <div class="nav-overlay page-prev" onclick="changeImage(-1)">❮</div>
+            <div class="nav-overlay page-next" onclick="changeImage(1)">❯</div>
+            <div class="page-indicator" id="img-indicator">Page 1 / 1</div>
+        </div>
+
+        <div class="right-panel">
+            <div class="right-panel-switch">
+                <button id="right-panel-score-btn" class="btn right-switch-btn btn-green active"
+                    onclick="switchRightPanel('score')">评分面板</button>
+                <button id="right-panel-shot-btn" class="btn right-switch-btn btn-gray"
+                    onclick="switchRightPanel('screenshot')">截图管理</button>
+            </div>
+
+            <div id="marking-main-area" class="right-panel-pane panel-content active">
+                <!-- low grade -->
+                <div id="panel-low" class="panel-content active">
+                    <form id="form-low">
+                        <div class="section-title">一、根据题目填涂正确的选项</div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.1</span>
+                                <div class="radio-group"><input type="radio" name="1_1_选项" id="L1_1_A" value="A"><label
+                                        for="L1_1_A">A</label><input type="radio" name="1_1_选项" id="L1_1_B"
+                                        value="B"><label for="L1_1_B">B</label><input type="radio" name="1_1_选项"
+                                        id="L1_1_C" value="C"><label for="L1_1_C">C</label><input type="radio"
+                                        name="1_1_选项" id="L1_1_D" value="D"><label for="L1_1_D">D</label><input
+                                        type="radio" name="1_1_选项" id="L1_1_M" value="MULTI"><label
+                                        for="L1_1_M">多选</label><input type="radio" name="1_1_选项" id="L1_1_N"
+                                        value="NULL" checked><label for="L1_1_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.2</span>
+                                <div class="radio-group"><input type="radio" name="1_2_选项" id="L1_2_A" value="A"><label
+                                        for="L1_2_A">A</label><input type="radio" name="1_2_选项" id="L1_2_B"
+                                        value="B"><label for="L1_2_B">B</label><input type="radio" name="1_2_选项"
+                                        id="L1_2_C" value="C"><label for="L1_2_C">C</label><input type="radio"
+                                        name="1_2_选项" id="L1_2_D" value="D"><label for="L1_2_D">D</label><input
+                                        type="radio" name="1_2_选项" id="L1_2_M" value="MULTI"><label
+                                        for="L1_2_M">多选</label><input type="radio" name="1_2_选项" id="L1_2_N"
+                                        value="NULL" checked><label for="L1_2_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.3</span>
+                                <div class="radio-group"><input type="radio" name="1_3_选项" id="L1_3_A" value="A"><label
+                                        for="L1_3_A">A</label><input type="radio" name="1_3_选项" id="L1_3_B"
+                                        value="B"><label for="L1_3_B">B</label><input type="radio" name="1_3_选项"
+                                        id="L1_3_C" value="C"><label for="L1_3_C">C</label><input type="radio"
+                                        name="1_3_选项" id="L1_3_D" value="D"><label for="L1_3_D">D</label><input
+                                        type="radio" name="1_3_选项" id="L1_3_M" value="MULTI"><label
+                                        for="L1_3_M">多选</label><input type="radio" name="1_3_选项" id="L1_3_N"
+                                        value="NULL" checked><label for="L1_3_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.4</span>
+                                <div class="radio-group"><input type="radio" name="1_4_选项" id="L1_4_A" value="A"><label
+                                        for="L1_4_A">A</label><input type="radio" name="1_4_选项" id="L1_4_B"
+                                        value="B"><label for="L1_4_B">B</label><input type="radio" name="1_4_选项"
+                                        id="L1_4_C" value="C"><label for="L1_4_C">C</label><input type="radio"
+                                        name="1_4_选项" id="L1_4_D" value="D"><label for="L1_4_D">D</label><input
+                                        type="radio" name="1_4_选项" id="L1_4_M" value="MULTI"><label
+                                        for="L1_4_M">多选</label><input type="radio" name="1_4_选项" id="L1_4_N"
+                                        value="NULL" checked><label for="L1_4_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.5</span>
+                                <div class="radio-group"><input type="radio" name="1_5_选项" id="L1_5_A" value="A"><label
+                                        for="L1_5_A">A</label><input type="radio" name="1_5_选项" id="L1_5_B"
+                                        value="B"><label for="L1_5_B">B</label><input type="radio" name="1_5_选项"
+                                        id="L1_5_C" value="C"><label for="L1_5_C">C</label><input type="radio"
+                                        name="1_5_选项" id="L1_5_D" value="D"><label for="L1_5_D">D</label><input
+                                        type="radio" name="1_5_选项" id="L1_5_M" value="MULTI"><label
+                                        for="L1_5_M">多选</label><input type="radio" name="1_5_选项" id="L1_5_N"
+                                        value="NULL" checked><label for="L1_5_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.6</span>
+                                <div class="radio-group"><input type="radio" name="1_6_选项" id="L1_6_A" value="A"><label
+                                        for="L1_6_A">A</label><input type="radio" name="1_6_选项" id="L1_6_B"
+                                        value="B"><label for="L1_6_B">B</label><input type="radio" name="1_6_选项"
+                                        id="L1_6_C" value="C"><label for="L1_6_C">C</label><input type="radio"
+                                        name="1_6_选项" id="L1_6_D" value="D"><label for="L1_6_D">D</label><input
+                                        type="radio" name="1_6_选项" id="L1_6_M" value="MULTI"><label
+                                        for="L1_6_M">多选</label><input type="radio" name="1_6_选项" id="L1_6_N"
+                                        value="NULL" checked><label for="L1_6_N">漏选</label></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">二、看图选句</div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">2.1</span>
+                                <div class="radio-group"><input type="radio" name="2_1_选项" id="L2_1_A" value="A"><label
+                                        for="L2_1_A">A</label><input type="radio" name="2_1_选项" id="L2_1_B"
+                                        value="B"><label for="L2_1_B">B</label><input type="radio" name="2_1_选项"
+                                        id="L2_1_C" value="C"><label for="L2_1_C">C</label><input type="radio"
+                                        name="2_1_选项" id="L2_1_D" value="D"><label for="L2_1_D">D</label><input
+                                        type="radio" name="2_1_选项" id="L2_1_M" value="MULTI"><label
+                                        for="L2_1_M">多选</label><input type="radio" name="2_1_选项" id="L2_1_N"
+                                        value="NULL" checked><label for="L2_1_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">2.2</span>
+                                <div class="radio-group"><input type="radio" name="2_2_选项" id="L2_2_A" value="A"><label
+                                        for="L2_2_A">A</label><input type="radio" name="2_2_选项" id="L2_2_B"
+                                        value="B"><label for="L2_2_B">B</label><input type="radio" name="2_2_选项"
+                                        id="L2_2_C" value="C"><label for="L2_2_C">C</label><input type="radio"
+                                        name="2_2_选项" id="L2_2_D" value="D"><label for="L2_2_D">D</label><input
+                                        type="radio" name="2_2_选项" id="L2_2_M" value="MULTI"><label
+                                        for="L2_2_M">多选</label><input type="radio" name="2_2_选项" id="L2_2_N"
+                                        value="NULL" checked><label for="L2_2_N">漏选</label></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">三、书写汉字</div>
+                        <div class="q-row">
+                            <div class="q-main" style="align-items: flex-start;">
+                                <span class="q-label" style="padding-top: 4px;">3.1</span>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div class="radio-group">
+                                        <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                        <input type="radio" name="3_1_得分" id="L3_1_0" value="0" checked><label
+                                            for="L3_1_0">0</label>
+                                        <input type="radio" name="3_1_得分" id="L3_1_1" value="1"><label
+                                            for="L3_1_1">1</label>
+                                        <input type="radio" name="3_1_得分" id="L3_1_2" value="2"><label
+                                            for="L3_1_2">2</label>
+                                        <input type="radio" name="3_1_得分" id="L3_1_3" value="3"><label
+                                            for="L3_1_3">3</label>
+                                        <input type="radio" name="3_1_得分" id="L3_1_4" value="4"><label
+                                            for="L3_1_4">4</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="3_1_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="3_1_总计字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="3_1_错字个数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">增漏字数:</span><input type="number"
+                                        class="stat-input" name="3_1_增漏字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">请情混淆个数:</span><input type="number"
+                                        class="stat-input" name="3_1_请情混淆个数" min="0" value="0"></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main" style="align-items: flex-start;">
+                                <span class="q-label" style="padding-top: 4px;">3.2</span>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div class="radio-group">
+                                        <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                        <input type="radio" name="3_2_得分" id="L3_2_0" value="0" checked><label
+                                            for="L3_2_0">0</label>
+                                        <input type="radio" name="3_2_得分" id="L3_2_1" value="1"><label
+                                            for="L3_2_1">1</label>
+                                        <input type="radio" name="3_2_得分" id="L3_2_2" value="2"><label
+                                            for="L3_2_2">2</label>
+                                        <input type="radio" name="3_2_得分" id="L3_2_3" value="3"><label
+                                            for="L3_2_3">3</label>
+                                        <input type="radio" name="3_2_得分" id="L3_2_4" value="4"><label
+                                            for="L3_2_4">4</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="3_2_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="3_2_总计字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="3_2_错字个数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">提取失败:</span><input type="number"
+                                        class="stat-input" name="3_2_提取失败" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">主住混淆个数:</span><input type="number"
+                                        class="stat-input" name="3_2_主住混淆个数" min="0" value="0"></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">四、阅读理解</div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">4.1.1</span>
+                                <div class="radio-group"><input type="radio" name="4_1_1_选项" id="L4_1_1_A"
+                                        value="A"><label for="L4_1_1_A">A</label><input type="radio" name="4_1_1_选项"
+                                        id="L4_1_1_B" value="B"><label for="L4_1_1_B">B</label><input type="radio"
+                                        name="4_1_1_选项" id="L4_1_1_C" value="C"><label for="L4_1_1_C">C</label><input
+                                        type="radio" name="4_1_1_选项" id="L4_1_1_D" value="D"><label
+                                        for="L4_1_1_D">D</label><input type="radio" name="4_1_1_选项" id="L4_1_1_M"
+                                        value="MULTI"><label for="L4_1_1_M">多选</label><input type="radio"
+                                        name="4_1_1_选项" id="L4_1_1_N" value="NULL" checked><label
+                                        for="L4_1_1_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main">
+                                <span class="q-label">4.2.1</span>
+                                <div class="radio-group">
+                                    <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                    <input type="radio" name="4_2_1_得分" id="L4_2_1_0" value="0" checked><label
+                                        for="L4_2_1_0">0</label>
+                                    <input type="radio" name="4_2_1_得分" id="L4_2_1_1" value="1"><label
+                                        for="L4_2_1_1">1</label>
+                                    <input type="radio" name="4_2_1_得分" id="L4_2_1_2" value="2"><label
+                                        for="L4_2_1_2">2</label>
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="4_2_1_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="4_2_1_总计字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="4_2_1_错字个数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">增漏字数:</span><input type="number"
+                                        class="stat-input" name="4_2_1_增漏字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">提取失败:</span><input type="number"
+                                        class="stat-input" name="4_2_1_提取失败" min="0" value="0"></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">4.2.2</span>
+                                <div class="radio-group"><input type="radio" name="4_2_2_选项" id="L4_2_2_A"
+                                        value="A"><label for="L4_2_2_A">A</label><input type="radio" name="4_2_2_选项"
+                                        id="L4_2_2_B" value="B"><label for="L4_2_2_B">B</label><input type="radio"
+                                        name="4_2_2_选项" id="L4_2_2_C" value="C"><label for="L4_2_2_C">C</label><input
+                                        type="radio" name="4_2_2_选项" id="L4_2_2_D" value="D"><label
+                                        for="L4_2_2_D">D</label><input type="radio" name="4_2_2_选项" id="L4_2_2_M"
+                                        value="MULTI"><label for="L4_2_2_M">多选</label><input type="radio"
+                                        name="4_2_2_选项" id="L4_2_2_N" value="NULL" checked><label
+                                        for="L4_2_2_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">4.2.3</span>
+                                <div class="radio-group"><input type="radio" name="4_2_3_选项" id="L4_2_3_A"
+                                        value="A"><label for="L4_2_3_A">A</label><input type="radio" name="4_2_3_选项"
+                                        id="L4_2_3_B" value="B"><label for="L4_2_3_B">B</label><input type="radio"
+                                        name="4_2_3_选项" id="L4_2_3_C" value="C"><label for="L4_2_3_C">C</label><input
+                                        type="radio" name="4_2_3_选项" id="L4_2_3_D" value="D"><label
+                                        for="L4_2_3_D">D</label><input type="radio" name="4_2_3_选项" id="L4_2_3_M"
+                                        value="MULTI"><label for="L4_2_3_M">多选</label><input type="radio"
+                                        name="4_2_3_选项" id="L4_2_3_N" value="NULL" checked><label
+                                        for="L4_2_3_N">漏选</label></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">五、选词填空</div>
+                        <div class="q-row">
+                            <div class="q-main">
+                                <span class="q-label">5</span>
+                                <div class="radio-group">
+                                    <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                    <input type="radio" name="5_得分" id="L5_0" value="0" checked><label
+                                        for="L5_0">0</label>
+                                    <input type="radio" name="5_得分" id="L5_1" value="1"><label for="L5_1">1</label>
+                                    <input type="radio" name="5_得分" id="L5_2" value="2"><label for="L5_2">2</label>
+                                    <input type="radio" name="5_得分" id="L5_3" value="3"><label for="L5_3">3</label>
+                                    <input type="radio" name="5_得分" id="L5_4" value="4"><label for="L5_4">4</label>
+                                    <input type="radio" name="5_得分" id="L5_5" value="5"><label for="L5_5">5</label>
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="5_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="5_总计字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="5_错字个数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">增漏字数:</span><input type="number"
+                                        class="stat-input" name="5_增漏字数" min="0" value="0"></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">六、连线题</div>
+                        <div class="q-row">
+                            <div class="q-main">
+                                <span class="q-label">6</span>
+                                <div class="radio-group">
+                                    <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                    <input type="radio" name="6_得分" id="L6_0" value="0" checked><label
+                                        for="L6_0">0</label>
+                                    <input type="radio" name="6_得分" id="L6_1" value="1"><label for="L6_1">1</label>
+                                    <input type="radio" name="6_得分" id="L6_2" value="2"><label for="L6_2">2</label>
+                                    <input type="radio" name="6_得分" id="L6_3" value="3"><label for="L6_3">3</label>
+                                    <input type="radio" name="6_得分" id="L6_4" value="4"><label for="L6_4">4</label>
+                                    <input type="radio" name="6_得分" id="L6_5" value="5"><label for="L6_5">5</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">汉字书写整体评判</div>
+                        <div class="q-row" style="background: #fafbfc; border-radius: 8px; margin: 10px 15px;">
+                            <div class="grid-2col">
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">汉字书写整体质量:</span>
+                                    <input type="radio" name="汉字书写整体质量" id="L_HZ_1_0" value="0" checked><label
+                                        for="L_HZ_1_0">0</label>
+                                    <input type="radio" name="汉字书写整体质量" id="L_HZ_1_05" value="0.5"><label
+                                        for="L_HZ_1_05">0.5</label>
+                                    <input type="radio" name="汉字书写整体质量" id="L_HZ_1_1" value="1"><label
+                                        for="L_HZ_1_1">1</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-title">句段书写评判</div>
+                        <div class="q-row" style="background: #fafbfc; border-radius: 8px; margin: 10px 15px;">
+                            <div class="grid-2col">
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">单字大小均匀:</span>
+                                    <input type="radio" name="句段书写_单字大小均匀" id="L_JD_1_0" value="0" checked><label
+                                        for="L_JD_1_0">0</label>
+                                    <input type="radio" name="句段书写_单字大小均匀" id="L_JD_1_05" value="0.5"><label
+                                        for="L_JD_1_05">0.5</label>
+                                    <input type="radio" name="句段书写_单字大小均匀" id="L_JD_1_1" value="1"><label
+                                        for="L_JD_1_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">行水平:</span>
+                                    <input type="radio" name="句段书写_行水平" id="L_JD_2_0" value="0" checked><label
+                                        for="L_JD_2_0">0</label>
+                                    <input type="radio" name="句段书写_行水平" id="L_JD_2_05" value="0.5"><label
+                                        for="L_JD_2_05">0.5</label>
+                                    <input type="radio" name="句段书写_行水平" id="L_JD_2_1" value="1"><label
+                                        for="L_JD_2_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">行倾斜:</span>
+                                    <input type="radio" name="句段书写_行倾斜" id="L_JD_8_0" value="0" checked><label
+                                        for="L_JD_8_0">0</label>
+                                    <input type="radio" name="句段书写_行倾斜" id="L_JD_8_05" value="0.5"><label
+                                        for="L_JD_8_05">0.5</label>
+                                    <input type="radio" name="句段书写_行倾斜" id="L_JD_8_1" value="1"><label
+                                        for="L_JD_8_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">字间距:</span>
+                                    <input type="radio" name="句段书写_字间距" id="L_JD_3_0" value="0" checked><label
+                                        for="L_JD_3_0">0</label>
+                                    <input type="radio" name="句段书写_字间距" id="L_JD_3_05" value="0.5"><label
+                                        for="L_JD_3_05">0.5</label>
+                                    <input type="radio" name="句段书写_字间距" id="L_JD_3_1" value="1"><label
+                                        for="L_JD_3_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">行间距:</span>
+                                    <input type="radio" name="句段书写_行间距" id="L_JD_4_0" value="0" checked><label
+                                        for="L_JD_4_0">0</label>
+                                    <input type="radio" name="句段书写_行间距" id="L_JD_4_05" value="0.5"><label
+                                        for="L_JD_4_05">0.5</label>
+                                    <input type="radio" name="句段书写_行间距" id="L_JD_4_1" value="1"><label
+                                        for="L_JD_4_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">左对齐:</span>
+                                    <input type="radio" name="句段书写_左对齐" id="L_JD_5_0" value="0" checked><label
+                                        for="L_JD_5_0">0</label>
+                                    <input type="radio" name="句段书写_左对齐" id="L_JD_5_05" value="0.5"><label
+                                        for="L_JD_5_05">0.5</label>
+                                    <input type="radio" name="句段书写_左对齐" id="L_JD_5_1" value="1"><label
+                                        for="L_JD_5_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">无超格或超线:</span>
+                                    <input type="radio" name="句段书写_无超格或超线" id="L_JD_6_0" value="0" checked><label
+                                        for="L_JD_6_0">0</label>
+                                    <input type="radio" name="句段书写_无超格或超线" id="L_JD_6_05" value="0.5"><label
+                                        for="L_JD_6_05">0.5</label>
+                                    <input type="radio" name="句段书写_无超格或超线" id="L_JD_6_1" value="1"><label
+                                        for="L_JD_6_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">文字匹配格线:</span>
+                                    <input type="radio" name="句段书写_文字匹配格线" id="L_JD_7_0" value="0" checked><label
+                                        for="L_JD_7_0">0</label>
+                                    <input type="radio" name="句段书写_文字匹配格线" id="L_JD_7_05" value="0.5"><label
+                                        for="L_JD_7_05">0.5</label>
+                                    <input type="radio" name="句段书写_文字匹配格线" id="L_JD_7_1" value="1"><label
+                                        for="L_JD_7_1">1</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- High grade -->
+                <div id="panel-high" class="panel-content">
+                    <form id="form-high">
+                        <div class="section-title">一、根据题目填涂正确的选项</div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.1</span>
+                                <div class="radio-group"><input type="radio" name="1_1_选项" id="H1_1_A" value="A"><label
+                                        for="H1_1_A">A</label><input type="radio" name="1_1_选项" id="H1_1_B"
+                                        value="B"><label for="H1_1_B">B</label><input type="radio" name="1_1_选项"
+                                        id="H1_1_C" value="C"><label for="H1_1_C">C</label><input type="radio"
+                                        name="1_1_选项" id="H1_1_D" value="D"><label for="H1_1_D">D</label><input
+                                        type="radio" name="1_1_选项" id="H1_1_M" value="MULTI"><label
+                                        for="H1_1_M">多选</label><input type="radio" name="1_1_选项" id="H1_1_N"
+                                        value="NULL" checked><label for="H1_1_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.2</span>
+                                <div class="radio-group"><input type="radio" name="1_2_选项" id="H1_2_A" value="A"><label
+                                        for="H1_2_A">A</label><input type="radio" name="1_2_选项" id="H1_2_B"
+                                        value="B"><label for="H1_2_B">B</label><input type="radio" name="1_2_选项"
+                                        id="H1_2_C" value="C"><label for="H1_2_C">C</label><input type="radio"
+                                        name="1_2_选项" id="H1_2_D" value="D"><label for="H1_2_D">D</label><input
+                                        type="radio" name="1_2_选项" id="H1_2_M" value="MULTI"><label
+                                        for="H1_2_M">多选</label><input type="radio" name="1_2_选项" id="H1_2_N"
+                                        value="NULL" checked><label for="H1_2_N">漏选</label></div>
+                                </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.3</span>
+                                <div class="radio-group"><input type="radio" name="1_3_选项" id="H1_3_A" value="A"><label
+                                        for="H1_3_A">A</label><input type="radio" name="1_3_选项" id="H1_3_B"
+                                        value="B"><label for="H1_3_B">B</label><input type="radio" name="1_3_选项"
+                                        id="H1_3_C" value="C"><label for="H1_3_C">C</label><input type="radio"
+                                        name="1_3_选项" id="H1_3_D" value="D"><label for="H1_3_D">D</label><input
+                                        type="radio" name="1_3_选项" id="H1_3_M" value="MULTI"><label
+                                        for="H1_3_M">多选</label><input type="radio" name="1_3_选项" id="H1_3_N"
+                                        value="NULL" checked><label for="H1_3_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.4</span>
+                                <div class="radio-group"><input type="radio" name="1_4_选项" id="H1_4_A" value="A"><label
+                                        for="H1_4_A">A</label><input type="radio" name="1_4_选项" id="H1_4_B"
+                                        value="B"><label for="H1_4_B">B</label><input type="radio" name="1_4_选项"
+                                        id="H1_4_C" value="C"><label for="H1_4_C">C</label><input type="radio"
+                                        name="1_4_选项" id="H1_4_D" value="D"><label for="H1_4_D">D</label><input
+                                        type="radio" name="1_4_选项" id="H1_4_M" value="MULTI"><label
+                                        for="H1_4_M">多选</label><input type="radio" name="1_4_选项" id="H1_4_N"
+                                        value="NULL" checked><label for="H1_4_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.5</span>
+                                <div class="radio-group"><input type="radio" name="1_5_选项" id="H1_5_A" value="A"><label
+                                        for="H1_5_A">A</label><input type="radio" name="1_5_选项" id="H1_5_B"
+                                        value="B"><label for="H1_5_B">B</label><input type="radio" name="1_5_选项"
+                                        id="H1_5_C" value="C"><label for="H1_5_C">C</label><input type="radio"
+                                        name="1_5_选项" id="H1_5_D" value="D"><label for="H1_5_D">D</label><input
+                                        type="radio" name="1_5_选项" id="H1_5_M" value="MULTI"><label
+                                        for="H1_5_M">多选</label><input type="radio" name="1_5_选项" id="H1_5_N"
+                                        value="NULL" checked><label for="H1_5_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">1.6</span>
+                                <div class="radio-group"><input type="radio" name="1_6_选项" id="H1_6_A" value="A"><label
+                                        for="H1_6_A">A</label><input type="radio" name="1_6_选项" id="H1_6_B"
+                                        value="B"><label for="H1_6_B">B</label><input type="radio" name="1_6_选项"
+                                        id="H1_6_C" value="C"><label for="H1_6_C">C</label><input type="radio"
+                                        name="1_6_选项" id="H1_6_D" value="D"><label for="H1_6_D">D</label><input
+                                        type="radio" name="1_6_选项" id="H1_6_M" value="MULTI"><label
+                                        for="H1_6_M">多选</label><input type="radio" name="1_6_选项" id="H1_6_N"
+                                        value="NULL" checked><label for="H1_6_N">漏选</label></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">二、书写汉字</div>
+                        <div class="q-row">
+                            <div class="q-main" style="align-items: flex-start;">
+                                <span class="q-label" style="padding-top: 4px;">2.1</span>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div class="radio-group">
+                                        <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                        <input type="radio" name="2_1_得分" id="H2_1_0" value="0" checked><label
+                                            for="H2_1_0">0</label>
+                                        <input type="radio" name="2_1_得分" id="H2_1_1" value="1"><label
+                                            for="H2_1_1">1</label>
+                                        <input type="radio" name="2_1_得分" id="H2_1_2" value="2"><label
+                                            for="H2_1_2">2</label>
+                                        <input type="radio" name="2_1_得分" id="H2_1_3" value="3"><label
+                                            for="H2_1_3">3</label>
+                                        <input type="radio" name="2_1_得分" id="H2_1_4" value="4"><label
+                                            for="H2_1_4">4</label>
+                                        <input type="radio" name="2_1_得分" id="H2_1_5" value="5"><label
+                                            for="H2_1_5">5</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="2_1_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="2_1_总计字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="2_1_错字个数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">增漏字数:</span><input type="number"
+                                        class="stat-input" name="2_1_增漏字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">混淆个数:</span><input type="number"
+                                        class="stat-input" name="2_1_混淆个数" min="0" value="0"></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main" style="align-items: flex-start;">
+                                <span class="q-label" style="padding-top: 4px;">2.2</span>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div class="radio-group">
+                                        <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                        <input type="radio" name="2_2_得分" id="H2_2_0" value="0" checked><label
+                                            for="H2_2_0">0</label>
+                                        <input type="radio" name="2_2_得分" id="H2_2_1" value="1"><label
+                                            for="H2_2_1">1</label>
+                                        <input type="radio" name="2_2_得分" id="H2_2_2" value="2"><label
+                                            for="H2_2_2">2</label>
+                                        <input type="radio" name="2_2_得分" id="H2_2_3" value="3"><label
+                                            for="H2_2_3">3</label>
+                                        <input type="radio" name="2_2_得分" id="H2_2_4" value="4"><label
+                                            for="H2_2_4">4</label>
+                                        <input type="radio" name="2_2_得分" id="H2_2_5" value="5"><label
+                                            for="H2_2_5">5</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="2_2_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="2_2_总计字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="2_2_错字个数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">提取失败:</span><input type="number"
+                                        class="stat-input" name="2_2_提取失败" min="0" value="0"></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">三、连词成句</div>
+                        <div class="q-row">
+                            <div class="q-main">
+                                <span class="q-label">3.1</span>
+                                <div class="radio-group">
+                                    <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                    <input type="radio" name="3_1_得分" id="H3_1_0" value="0" checked><label
+                                        for="H3_1_0">0</label>
+                                    <input type="radio" name="3_1_得分" id="H3_1_05" value="0.5"><label
+                                        for="H3_1_05">0.5</label>
+                                    <input type="radio" name="3_1_得分" id="H3_1_1" value="1"><label
+                                        for="H3_1_1">1</label>
+                                    <input type="radio" name="3_1_得分" id="H3_1_15" value="1.5"><label
+                                        for="H3_1_15">1.5</label>
+                                    <input type="radio" name="3_1_得分" id="H3_1_2" value="2"><label
+                                        for="H3_1_2">2</label>
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="3_1_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="3_1_总计字数" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="3_1_错字个数" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">增漏字数:</span><input type="number"
+                                        class="stat-input" name="3_1_增漏字数" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">标点错误:</span><input type="number"
+                                        class="stat-input" name="3_1_标点错误" value="0"></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main">
+                                <span class="q-label">3.2</span>
+                                <div class="radio-group">
+                                    <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                    <input type="radio" name="3_2_得分" id="H3_2_0" value="0" checked><label
+                                        for="H3_2_0">0</label>
+                                    <input type="radio" name="3_2_得分" id="H3_2_05" value="0.5"><label
+                                        for="H3_2_05">0.5</label>
+                                    <input type="radio" name="3_2_得分" id="H3_2_1" value="1"><label
+                                        for="H3_2_1">1</label>
+                                    <input type="radio" name="3_2_得分" id="H3_2_15" value="1.5"><label
+                                        for="H3_2_15">1.5</label>
+                                    <input type="radio" name="3_2_得分" id="H3_2_2" value="2"><label
+                                        for="H3_2_2">2</label>
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="3_2_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="3_2_总计字数" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="3_2_错字个数" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">增漏字数:</span><input type="number"
+                                        class="stat-input" name="3_2_增漏字数" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">标点错误:</span><input type="number"
+                                        class="stat-input" name="3_2_标点错误" value="0"></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">四、阅读理解</div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">4.1.1</span>
+                                <div class="radio-group"><input type="radio" name="4_1_1_选项" id="H4_1_1_A"
+                                        value="A"><label for="H4_1_1_A">A</label><input type="radio" name="4_1_1_选项"
+                                        id="H4_1_1_B" value="B"><label for="H4_1_1_B">B</label><input type="radio"
+                                        name="4_1_1_选项" id="H4_1_1_C" value="C"><label for="H4_1_1_C">C</label><input
+                                        type="radio" name="4_1_1_选项" id="H4_1_1_D" value="D"><label
+                                        for="H4_1_1_D">D</label><input type="radio" name="4_1_1_选项" id="H4_1_1_M"
+                                        value="MULTI"><label for="H4_1_1_M">多选</label><input type="radio"
+                                        name="4_1_1_选项" id="H4_1_1_N" value="NULL" checked><label
+                                        for="H4_1_1_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">4.1.2</span>
+                                <div class="radio-group"><input type="radio" name="4_1_2_选项" id="H4_1_2_A"
+                                        value="A"><label for="H4_1_2_A">A</label><input type="radio" name="4_1_2_选项"
+                                        id="H4_1_2_B" value="B"><label for="H4_1_2_B">B</label><input type="radio"
+                                        name="4_1_2_选项" id="H4_1_2_C" value="C"><label for="H4_1_2_C">C</label><input
+                                        type="radio" name="4_1_2_选项" id="H4_1_2_D" value="D"><label
+                                        for="H4_1_2_D">D</label><input type="radio" name="4_1_2_选项" id="H4_1_2_M"
+                                        value="MULTI"><label for="H4_1_2_M">多选</label><input type="radio"
+                                        name="4_1_2_选项" id="H4_1_2_N" value="NULL" checked><label
+                                        for="H4_1_2_N">漏选</label></div>
+                            </div>
+                        </div>
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">4.2.1</span>
+                                <div class="radio-group"><input type="radio" name="4_2_1_选项" id="H4_2_1_A"
+                                        value="A"><label for="H4_2_1_A">A</label><input type="radio" name="4_2_1_选项"
+                                        id="H4_2_1_B" value="B"><label for="H4_2_1_B">B</label><input type="radio"
+                                        name="4_2_1_选项" id="H4_2_1_C" value="C"><label for="H4_2_1_C">C</label><input
+                                        type="radio" name="4_2_1_选项" id="H4_2_1_D" value="D"><label
+                                        for="H4_2_1_D">D</label><input type="radio" name="4_2_1_选项" id="H4_2_1_M"
+                                        value="MULTI"><label for="H4_2_1_M">多选</label><input type="radio"
+                                        name="4_2_1_选项" id="H4_2_1_N" value="NULL" checked><label
+                                        for="H4_2_1_N">漏选</label></div>
+                            </div>
+                        </div>
+
+                        <div class="q-row">
+                            <div class="q-main">
+                                <span class="q-label">4.2.2</span>
+                                <div class="radio-group">
+                                    <span class="stat-label" style="margin-right:8px;">得分:</span>
+                                    <input type="radio" name="4_2_2_得分" id="H4_2_2_0" value="0" checked><label
+                                        for="H4_2_2_0">0</label>
+                                    <input type="radio" name="4_2_2_得分" id="H4_2_2_1" value="1"><label
+                                        for="H4_2_2_1">1</label>
+                                    <input type="radio" name="4_2_2_得分" id="H4_2_2_2" value="2"><label
+                                        for="H4_2_2_2">2</label>
+                                </div>
+                            </div>
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">最终得分:</span><input type="number"
+                                        class="stat-input" name="4_2_2_最终得分" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="4_2_2_总计字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="4_2_2_错字个数" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">增漏字数:</span><input type="number"
+                                        class="stat-input" name="4_2_2_增漏字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">提取失败:</span><input type="number"
+                                        class="stat-input" name="4_2_2_提取失败" min="0" value="0"></div>
+                            </div>
+                        </div>
+
+                        <div class="q-row">
+                            <div class="q-main"><span class="q-label">4.2.3</span>
+                                <div class="radio-group"><input type="radio" name="4_2_3_选项" id="H4_2_3_A"
+                                        value="A"><label for="H4_2_3_A">A</label><input type="radio" name="4_2_3_选项"
+                                        id="H4_2_3_B" value="B"><label for="H4_2_3_B">B</label><input type="radio"
+                                        name="4_2_3_选项" id="H4_2_3_C" value="C"><label for="H4_2_3_C">C</label><input
+                                        type="radio" name="4_2_3_选项" id="H4_2_3_D" value="D"><label
+                                        for="H4_2_3_D">D</label><input type="radio" name="4_2_3_选项" id="H4_2_3_M"
+                                        value="MULTI"><label for="H4_2_3_M">多选</label><input type="radio"
+                                        name="4_2_3_选项" id="H4_2_3_N" value="NULL" checked><label
+                                        for="H4_2_3_N">漏选</label></div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">五、书写</div>
+                        <div class="q-row">
+                            <div class="q-main" style="align-items: flex-start;">
+                                <span class="q-label" style="padding-top: 4px;">5</span>
+
+                                <div style="display: flex; flex-direction: column; width: 100%;">
+                                    <div class="auto-score-display">
+                                        得分: <span id="H5_Auto_Total"
+                                            style="font-size: 18px; color: var(--danger);">0</span> / 6
+                                        <input type="hidden" name="5_得分" id="H5_Hidden_Total" value="0">
+                                    </div>
+
+                                    <div class="grid-2col" style="margin-bottom: 12px;">
+                                        <div class="radio-group">
+                                            <span class="stat-label" style="min-width: 65px;">语量:</span>
+                                            <input type="radio" name="5_语量得分" id="H5_V_0" value="0" onchange="calcH5()"
+                                                checked><label for="H5_V_0">0</label>
+                                            <input type="radio" name="5_语量得分" id="H5_V_05" value="0.5"
+                                                onchange="calcH5()"><label for="H5_V_05">0.5</label>
+                                            <input type="radio" name="5_语量得分" id="H5_V_1" value="1"
+                                                onchange="calcH5()"><label for="H5_V_1">1</label>
+                                        </div>
+                                        <div class="radio-group">
+                                            <span class="stat-label" style="min-width: 65px;">卷面:</span>
+                                            <input type="radio" name="5_卷面得分" id="H5_P_0" value="0" onchange="calcH5()"
+                                                checked><label for="H5_P_0">0</label>
+                                            <input type="radio" name="5_卷面得分" id="H5_P_05" value="0.5"
+                                                onchange="calcH5()"><label for="H5_P_05">0.5</label>
+                                            <input type="radio" name="5_卷面得分" id="H5_P_1" value="1"
+                                                onchange="calcH5()"><label for="H5_P_1">1</label>
+                                        </div>
+                                        <div class="radio-group">
+                                            <span class="stat-label" style="min-width: 65px;">相关性:</span>
+                                            <input type="radio" name="5_相关性得分" id="H5_R_0" value="0" onchange="calcH5()"
+                                                checked><label for="H5_R_0">0</label>
+                                            <input type="radio" name="5_相关性得分" id="H5_R_05" value="0.5"
+                                                onchange="calcH5()"><label for="H5_R_05">0.5</label>
+                                            <input type="radio" name="5_相关性得分" id="H5_R_1" value="1"
+                                                onchange="calcH5()"><label for="H5_R_1">1</label>
+                                        </div>
+                                        <div class="radio-group">
+                                            <span class="stat-label" style="min-width: 65px;">篇章逻辑:</span>
+                                            <input type="radio" name="5_篇章逻辑得分" id="H5_L_0" value="0"
+                                                onchange="calcH5()" checked><label for="H5_L_0">0</label>
+                                            <input type="radio" name="5_篇章逻辑得分" id="H5_L_05" value="0.5"
+                                                onchange="calcH5()"><label for="H5_L_05">0.5</label>
+                                            <input type="radio" name="5_篇章逻辑得分" id="H5_L_1" value="1"
+                                                onchange="calcH5()"><label for="H5_L_1">1</label>
+                                        </div>
+                                        <div class="radio-group">
+                                            <span class="stat-label" style="min-width: 65px;">语义:</span>
+                                            <input type="radio" name="5_语义得分" id="H5_S_0" value="0" onchange="calcH5()"
+                                                checked><label for="H5_S_0">0</label>
+                                            <input type="radio" name="5_语义得分" id="H5_S_05" value="0.5"
+                                                onchange="calcH5()"><label for="H5_S_05">0.5</label>
+                                            <input type="radio" name="5_语义得分" id="H5_S_1" value="1"
+                                                onchange="calcH5()"><label for="H5_S_1">1</label>
+                                        </div>
+                                        <div class="radio-group">
+                                            <span class="stat-label" style="min-width: 65px;">形式:</span>
+                                            <input type="radio" name="5_形式得分" id="H5_E_0" value="0" onchange="calcH5()"
+                                                checked><label for="H5_E_0">0</label>
+                                            <input type="radio" name="5_形式得分" id="H5_E_05" value="0.5"
+                                                onchange="calcH5()"><label for="H5_E_05">0.5</label>
+                                            <input type="radio" name="5_形式得分" id="H5_E_1" value="1"
+                                                onchange="calcH5()"><label for="H5_E_1">1</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="subj-stats">
+                                <div class="stat-item"><span class="stat-label">总计字数:</span><input type="number"
+                                        class="stat-input" name="5_总计字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">句子个数:</span><input type="number"
+                                        class="stat-input" name="5_句子个数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">错字个数:</span><input type="number"
+                                        class="stat-input" name="5_错字个数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">增漏字数:</span><input type="number"
+                                        class="stat-input" name="5_增漏字数" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">提取失败:</span><input type="number"
+                                        class="stat-input" name="5_提取失败" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">语法错误:</span><input type="number"
+                                        class="stat-input" name="5_语法错误" min="0" value="0"></div>
+                                <div class="stat-item"><span class="stat-label">标点错误:</span><input type="number"
+                                        class="stat-input" name="5_标点错误" min="0" value="0"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="section-title">汉字书写整体评判</div>
+                        <div class="q-row" style="background: #fafbfc; border-radius: 8px; margin: 10px 15px;">
+                            <div class="grid-2col">
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">汉字书写整体质量:</span>
+                                    <input type="radio" name="汉字书写整体质量" id="H_HZ_1_0" value="0" checked><label
+                                        for="H_HZ_1_0">0</label>
+                                    <input type="radio" name="汉字书写整体质量" id="H_HZ_1_05" value="0.5"><label
+                                        for="H_HZ_1_05">0.5</label>
+                                    <input type="radio" name="汉字书写整体质量" id="H_HZ_1_1" value="1"><label
+                                        for="H_HZ_1_1">1</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">句段书写评判</div>
+                        <div class="q-row" style="background: #fafbfc; border-radius: 8px; margin: 10px 15px;">
+                            <div class="grid-2col">
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">单字大小均匀:</span>
+                                    <input type="radio" name="句段书写_单字大小均匀" id="H_JD_1_0" value="0" checked><label
+                                        for="H_JD_1_0">0</label>
+                                    <input type="radio" name="句段书写_单字大小均匀" id="H_JD_1_05" value="0.5"><label
+                                        for="H_JD_1_05">0.5</label>
+                                    <input type="radio" name="句段书写_单字大小均匀" id="H_JD_1_1" value="1"><label
+                                        for="H_JD_1_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">行水平:</span>
+                                    <input type="radio" name="句段书写_行水平" id="H_JD_2_0" value="0" checked><label
+                                        for="H_JD_2_0">0</label>
+                                    <input type="radio" name="句段书写_行水平" id="H_JD_2_05" value="0.5"><label
+                                        for="H_JD_2_05">0.5</label>
+                                    <input type="radio" name="句段书写_行水平" id="H_JD_2_1" value="1"><label
+                                        for="H_JD_2_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">行倾斜:</span>
+                                    <input type="radio" name="句段书写_行倾斜" id="H_JD_8_0" value="0" checked><label
+                                        for="H_JD_8_0">0</label>
+                                    <input type="radio" name="句段书写_行倾斜" id="H_JD_8_05" value="0.5"><label
+                                        for="H_JD_8_05">0.5</label>
+                                    <input type="radio" name="句段书写_行倾斜" id="H_JD_8_1" value="1"><label
+                                        for="H_JD_8_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">字间距:</span>
+                                    <input type="radio" name="句段书写_字间距" id="H_JD_3_0" value="0" checked><label
+                                        for="H_JD_3_0">0</label>
+                                    <input type="radio" name="句段书写_字间距" id="H_JD_3_05" value="0.5"><label
+                                        for="H_JD_3_05">0.5</label>
+                                    <input type="radio" name="句段书写_字间距" id="H_JD_3_1" value="1"><label
+                                        for="H_JD_3_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">行间距:</span>
+                                    <input type="radio" name="句段书写_行间距" id="H_JD_4_0" value="0" checked><label
+                                        for="H_JD_4_0">0</label>
+                                    <input type="radio" name="句段书写_行间距" id="H_JD_4_05" value="0.5"><label
+                                        for="H_JD_4_05">0.5</label>
+                                    <input type="radio" name="句段书写_行间距" id="H_JD_4_1" value="1"><label
+                                        for="H_JD_4_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">左对齐:</span>
+                                    <input type="radio" name="句段书写_左对齐" id="H_JD_5_0" value="0" checked><label
+                                        for="H_JD_5_0">0</label>
+                                    <input type="radio" name="句段书写_左对齐" id="H_JD_5_05" value="0.5"><label
+                                        for="H_JD_5_05">0.5</label>
+                                    <input type="radio" name="句段书写_左对齐" id="H_JD_5_1" value="1"><label
+                                        for="H_JD_5_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">无超格或超线:</span>
+                                    <input type="radio" name="句段书写_无超格或超线" id="H_JD_6_0" value="0" checked><label
+                                        for="H_JD_6_0">0</label>
+                                    <input type="radio" name="句段书写_无超格或超线" id="H_JD_6_05" value="0.5"><label
+                                        for="H_JD_6_05">0.5</label>
+                                    <input type="radio" name="句段书写_无超格或超线" id="H_JD_6_1" value="1"><label
+                                        for="H_JD_6_1">1</label>
+                                </div>
+                                <div class="radio-group jd-group">
+                                    <span class="stat-label jd-label">文字匹配格线:</span>
+                                    <input type="radio" name="句段书写_文字匹配格线" id="H_JD_7_0" value="0" checked><label
+                                        for="H_JD_7_0">0</label>
+                                    <input type="radio" name="句段书写_文字匹配格线" id="H_JD_7_05" value="0.5"><label
+                                        for="H_JD_7_05">0.5</label>
+                                    <input type="radio" name="句段书写_文字匹配格线" id="H_JD_7_1" value="1"><label
+                                        for="H_JD_7_1">1</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="screenshot-management" class="screenshot-management panel-content">
+                <div class="section-title">截图管理</div>
+                <div class="screenshot-toolbar">
+                    <input id="screenshot-filter" class="form-input" placeholder="按关键字筛选文件名/错误类型"
+                        oninput="renderScreenshotList()">
+                    <button class="btn btn-green" onclick="loadStudentScreenshots()">刷新</button>
+                </div>
+                <div id="screenshot-list" class="screenshot-list"></div>
+            </div>
+
+            <div id="right-panel-footer" class="footer-bar">
+                <button class="btn btn-green save-btn-large" onclick="saveAll(false)">提交并计算总分</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay screenshot-preview-overlay" id="screenshot-preview-overlay">
+        <div class="modal-content screenshot-preview-content">
+            <div class="modal-title screenshot-preview-title">截图预览</div>
+            <div class="screenshot-preview-body">
+                <img id="screenshot-preview-img" alt="截图预览">
+            </div>
+            <div class="screenshot-preview-actions">
+                <button class="btn btn-gray" onclick="closeScreenshotPreview()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="screenshot-modal">
+        <div class="modal-content">
+            <div class="modal-title">已截取书写错误，请标注细节</div>
+            <div class="crop-preview-box">
+                <img id="crop-preview-img" src="">
+            </div>
+
+            <div class="error-selection-container">
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #636e72;">1. 选择错误类型（单字/句子）
+                </div>
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #636e72;">单字--笔画维度(可多选)</div>
+                <div class="checkbox-grid" id="error-categories">
+                    <label class="checkbox-item"><input type="checkbox" value="单字_增添笔画"> 增添笔画</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_删减笔画"> 删减笔画</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_断笔不当"> 断笔不当</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_长短有误"> 长短有误</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_笔画粘连"> 笔画粘连</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_笔画镜像"> 笔画镜像</label>
+                </div>
+
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #636e72;">单字--部件维度(可多选)</div>
+                <div class="checkbox-grid" id="error-categories">
+                    <label class="checkbox-item"><input type="checkbox" value="单字_字形结构错误"> 字形结构错误</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_部件分离"> 部件分离</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_增删偏旁"> 增删偏旁</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_顺序颠倒"> 顺序颠倒</label>
+                </div>
+
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #636e72;">单字--汉字维度(可多选)</div>
+                <div class="checkbox-grid" id="error-categories">
+                    <label class="checkbox-item"><input type="checkbox" value="单字_形近字混淆"> 形近字混淆</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_音近字混淆"> 音近字混淆</label>
+                    <label class="checkbox-item"><input type="checkbox" value="单字_其他错误（字）"> 其他错误（字）</label>
+                </div>
+
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #636e72;">句子错误 (可多选)</div>
+                <div class="checkbox-grid" id="error-categories">
+                    <label class="checkbox-item"><input type="checkbox" value="句子_字序颠倒"> 字序颠倒</label>
+                    <label class="checkbox-item"><input type="checkbox" value="句子_增字漏字"> 增字漏字</label>
+                    <label class="checkbox-item"><input type="checkbox" value="句子_词句其他错误"> 词句其他错误</label>
+                    <label class="checkbox-item"><input type="checkbox" value="句子_空间分布不均"> 空间分布不均</label>
+                    <label class="checkbox-item"><input type="checkbox" value="句子_空间分布异常"> 空间分布异常</label>
+                    <label class="checkbox-item"><input type="checkbox" value="句子_其他错误（句子）"> 其他错误（句子）</label>
+                </div>
+            </div>
+            <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; margin-top: 15px; color: #636e72;">2.
+                请输入正确的汉字/句子 (必填，作为文件名，句子错误填写句子1，句子2...)</div>
+            <input type="text" id="correct-char-input" class="form-input"
+                style="height: 36px; font-size: 15px; text-align: center; border-color: var(--primary);"
+                placeholder="正确汉字或句子序号（如：句子1）">
+
+            <div class="modal-footer">
+                <button class="btn btn-gray" onclick="closeScreenshotModal()">取消</button>
+                <button class="btn btn-purple" onclick="submitScreenshot()" id="btn-submit-shot">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const statInputs = document.querySelectorAll('.stat-input');
+            statInputs.forEach(input => {
+                const minusBtn = document.createElement('button');
+                minusBtn.type = 'button';
+                minusBtn.className = 'num-btn';
+                minusBtn.innerText = '-';
+                minusBtn.onclick = () => {
+                    let val = parseFloat(input.value) || 0; // 修改为 parseFloat
+                    let min = parseFloat(input.min) || 0;
+                    if (val > min) {
+                        input.value = val - 1; // 这里如果遇到小数可能需要处理，但如果是整数输入框没关系
+                        input.dispatchEvent(new Event('change'));
+                    }
+                };
+
+                const plusBtn = document.createElement('button');
+                plusBtn.type = 'button';
+                plusBtn.className = 'num-btn';
+                plusBtn.innerText = '+';
+                plusBtn.onclick = () => {
+                    let val = parseFloat(input.value) || 0;
+                    input.value = val + 1;
+                    input.dispatchEvent(new Event('change'));
+                };
+
+                input.parentNode.insertBefore(minusBtn, input);
+                input.parentNode.insertBefore(plusBtn, input.nextSibling);
+
+                input.addEventListener('focus', function () { this.select(); });
+            });
+        });
+
+        // 动态计算高年级第 5 题的书写得分
+        function calcH5() {
+            let total = 0;
+            const radios = document.querySelectorAll('#form-high input[name^="5_"][name$="得分"][type="radio"]:checked');
+            radios.forEach(r => {
+                if (r.name !== '5_得分') {
+                    total += parseFloat(r.value);
+                }
+            });
+            document.getElementById('H5_Auto_Total').innerText = total;
+            document.getElementById('H5_Hidden_Total').value = total;
+        }
+    </script>
+
+    <script src="js/mock-data.js"></script>
+    <script src="js/mock-api.js"></script>
+    <script src="js/marking.js"></script>
+
+    <script>
+        window.resetForm = function () {
+            // 1. 全部取消勾选
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+            // 2. 选择题：自动勾选“漏选” (NULL)
+            document.querySelectorAll('input[type="radio"][value="NULL"]').forEach(r => r.checked = true);
+            // 3. 打分/评判题：自动勾选 0 分
+            document.querySelectorAll('input[type="radio"][value="0"]').forEach(r => r.checked = true);
+
+            // 4. 重置输入框
+            document.querySelectorAll('input[type="number"], input[type="text"]').forEach(n => {
+                if (n.id !== 's_id' && n.id !== 'stu-jump-input' && n.id !== 'search-input') {
+                    // 如果是带有 stat-input 类的统计框，恢复为 0
+                    if (n.classList.contains('stat-input')) {
+                        n.value = '0';
+                    } else {
+                        n.value = '';
+                    }
+                }
+            });
+
+            // 5. 清空总分及高年级大题自动算分 UI
+            document.getElementById('s_total').value = '';
+            if (document.getElementById('H5_Auto_Total')) {
+                document.getElementById('H5_Auto_Total').innerText = '0';
+                document.getElementById('H5_Hidden_Total').value = '0';
+            }
+        }
+    </script>
+</body>
+
+</html>

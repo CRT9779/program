@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>读写报告自动化 · Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237E2FA8'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>报</text></svg>">
+<style>
+:root {
+  --text-1: #1D1D1F; --text-2: #6E6E73;
+  --purple: #7E2FA8; --purple-deep: #5F1D98;
+  --green: #2E7D32; --radius: 16px;
+  --shadow: 0 2px 8px rgba(29,29,31,.05), 0 10px 28px rgba(29,29,31,.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: #F7F6F9; color: var(--text-1);
+  min-height: 100vh; -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+header { text-align: center; padding: 44px 0 12px; }
+header .back { display: inline-block; font-size: 13px; color: var(--purple); text-decoration: none; margin-bottom: 14px; }
+header h1 { font-size: 26px; font-weight: 700; }
+header p { margin-top: 8px; color: var(--text-2); font-size: 14px; line-height: 1.8; }
+.notice {
+  margin: 16px 0 0; padding: 10px 16px; border-radius: 12px;
+  background: #FFF8E1; color: #8D6E00; font-size: 13px; text-align: center;
+}
+.flow {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0 8px;
+}
+@media (max-width: 640px) { .flow { grid-template-columns: 1fr; } }
+.flow .panel { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px; }
+.flow h3 { font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.flow .old h3 { color: #C0392B; }
+.flow .new h3 { color: var(--green); }
+.flow ol { margin-left: 18px; font-size: 13.5px; color: var(--text-2); line-height: 2; }
+.section-title { margin: 26px 0 12px; font-size: 17px; font-weight: 700; }
+.desc { font-size: 13px; color: var(--text-2); margin-bottom: 14px; }
+
+.demo-card {
+  display: block; background: #fff; border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 20px 22px; margin-bottom: 14px; text-decoration: none; color: inherit;
+  transition: transform .15s ease;
+}
+.demo-card:hover { transform: translateY(-2px); }
+.demo-card .t { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.demo-card .d { font-size: 13px; color: var(--text-2); margin-top: 6px; line-height: 1.7; }
+.demo-card .go { display: inline-block; margin-top: 12px; color: var(--purple); font-size: 13.5px; font-weight: 600; }
+
+.reports { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 640px) { .reports { grid-template-columns: 1fr; } }
+.reports a {
+  display: block; background: #fff; border-radius: 12px; padding: 12px 16px;
+  text-decoration: none; color: var(--text-1); box-shadow: 0 1px 4px rgba(29,29,31,.06);
+  font-size: 13.5px; border: 1px solid #F0F0F3;
+}
+.reports a:hover { border-color: var(--purple); }
+.reports .name { font-weight: 600; }
+.reports .meta { color: var(--text-2); font-size: 12px; margin-top: 3px; }
+footer { text-align: center; padding: 30px 0 44px; font-size: 12.5px; color: var(--text-2); line-height: 1.9; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <a class="back" href="../index.html">⬅ 返回作品集首页</a>
+    <h1>📊 读写报告自动化 · Demo</h1>
+    <p>儿童综合读写能力评估报告的自动化生成系统。<br>评估工具以纸质量表作答，旧流程靠人工扫描、批改、对照常模、撰写报告；<br>本系统把「批改→换算→撰写」改造为机器自动完成，人工只做审核。</p>
+    <div class="notice">⚠ 演示说明：报告中所有儿童姓名、学校、出生日期均为化名/虚构，错题截图已脱敏处理</div>
+  </header>
+
+  <div class="flow">
+    <div class="panel old">
+      <h3>❌ 旧流程（全人工）</h3>
+      <ol>
+        <li>人工扫描答题纸</li>
+        <li>人工批改 + 逐题标注</li>
+        <li>人工对照常模表换算分数</li>
+        <li>人工撰写评估报告</li>
+        <li>人工审核</li>
+      </ol>
+    </div>
+    <div class="panel new">
+      <h3>✅ 新流程（机器+人工审核）</h3>
+      <ol>
+        <li>人工扫描答题纸</li>
+        <li>前端标注工具快速标记错题类型</li>
+        <li>机器自动换算常模、生成报告</li>
+        <li>人工审核后交付</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2 class="section-title">🖊 前端标注工具（交互演示）</h2>
+  <p class="desc">原系统为内部线上版本，此处为独立改造的静态演示页：预置样例数据，标注操作真实可用，结果保存在本机浏览器。</p>
+  <a class="demo-card" href="标注演示/index.html">
+    <div class="t">✏️ 答题纸标注界面</div>
+    <div class="d">选择样例学生 → 逐图查看答题截图 → 按错误类型标注（增添笔画 / 删减笔画 / 形近字混淆等）→ 生成标注汇总</div>
+    <span class="go">进入标注演示 →</span>
+  </a>
+  <a class="demo-card" href="标注演示/char_mark.html">
+    <div class="t">🔤 识字量测验批注</div>
+    <div class="d">36 / 45 字识字量列表的快速批注界面，标记识字情况并保存</div>
+    <span class="go">进入识字量批注 →</span>
+  </a>
+
+  <h2 class="section-title">📄 样例报告（点开查看完整排版）</h2>
+  <p class="desc">由系统真实生成的 HTML 报告，四层架构（数据计算 / 常模匹配 / 语料评语 / 排版模板）各司其职。</p>
+  <div class="reports">
+    <a href="reports/001_评估_低年级.html"><span class="name">001 号样例</span><div class="meta">低年级 · 个人评估报告</div></a>
+    <a href="reports/001_批量_低年级.html"><span class="name">001 号样例</span><div class="meta">低年级 · 批量汇总报告</div></a>
+    <a href="reports/003_评估_低年级.html"><span class="name">003 号样例</span><div class="meta">低年级 · 个人评估报告</div></a>
+    <a href="reports/003_批量_低年级.html"><span class="name">003 号样例</span><div class="meta">低年级 · 批量汇总报告</div></a>
+    <a href="reports/002_评估_高年级.html"><span class="name">002 号样例</span><div class="meta">高年级 · 个人评估报告</div></a>
+    <a href="reports/002_批量_高年级.html"><span class="name">002 号样例</span><div class="meta">高年级 · 批量汇总报告</div></a>
+    <a href="reports/004_评估_高年级.html"><span class="name">004 号样例</span><div class="meta">高年级 · 个人评估报告</div></a>
+    <a href="reports/004_批量_高年级.html"><span class="name">004 号样例</span><div class="meta">高年级 · 批量汇总报告</div></a>
+  </div>
+
+  <footer>
+    数据安全：原始 Excel 数据与真实个人信息未包含在本演示中<br>
+    <a href="../index.html">← 返回作品集首页</a>
+  </footer>
+</div>
+</body>
+</html>

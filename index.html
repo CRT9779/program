@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品集演示 · 陈汝桐</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237E2FA8'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold'>陈</text></svg>">
+<style>
+:root {
+  --bg: #F7F6F9;
+  --card: #FFFFFF;
+  --text-1: #1D1D1F;
+  --text-2: #6E6E73;
+  --purple: #7E2FA8;
+  --purple-deep: #5F1D98;
+  --green: #2E7D32;
+  --blue: #1565C0;
+  --radius: 20px;
+  --shadow: 0 2px 8px rgba(29, 29, 31, 0.05), 0 12px 32px rgba(29, 29, 31, 0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(180deg, #F3E5FA 0%, var(--bg) 320px);
+  color: var(--text-1);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+header { text-align: center; padding: 56px 0 8px; }
+header h1 { font-size: 30px; font-weight: 700; letter-spacing: 1px; }
+header .sub { margin-top: 10px; color: var(--text-2); font-size: 15px; }
+header .badge {
+  display: inline-block; margin-top: 16px; padding: 6px 16px;
+  border-radius: 999px; background: rgba(126, 47, 168, 0.08);
+  color: var(--purple-deep); font-size: 13px; font-weight: 600;
+}
+
+.grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 20px; padding: 36px 0 20px;
+  max-width: 760px; margin: 0 auto;
+}
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 26px 24px;
+  display: flex; flex-direction: column;
+  transition: transform .18s ease, box-shadow .18s ease;
+  text-decoration: none; color: inherit;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(29, 29, 31, 0.12); }
+.card .icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; margin-bottom: 16px; color: #fff;
+}
+.card:nth-child(1) .icon { background: linear-gradient(135deg, #66BB6A, #2E7D32); }
+.card:nth-child(2) .icon { background: linear-gradient(135deg, #B56BE0, #7E2FA8); }
+.card h2 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+.card .role { font-size: 13px; color: var(--text-2); margin-bottom: 12px; }
+.card .desc { font-size: 14px; color: var(--text-2); line-height: 1.7; flex: 1; }
+.card .tags { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+.card .tag {
+  font-size: 12px; padding: 4px 10px; border-radius: 999px;
+  background: #F2F2F7; color: var(--text-2);
+}
+.card .cta {
+  margin-top: 18px; text-align: center; padding: 11px 0;
+  border-radius: 999px; font-size: 15px; font-weight: 600;
+  color: #fff; background: linear-gradient(135deg, #B56BE0, #7E2FA8);
+}
+.card:nth-child(1) .cta { background: linear-gradient(135deg, #81C784, #2E7D32); }
+
+footer {
+  text-align: center; padding: 28px 0 48px;
+  color: var(--text-2); font-size: 12.5px; line-height: 1.9;
+}
+footer a { color: var(--purple); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>作品集 · 在线试用</h1>
+    <p class="sub">扫描二维码后，点卡片即可直接体验以下两个作品（无需安装，手机浏览器即开即用）</p>
+    <span class="badge">📱 建议手机竖屏体验 · 全程无需注册（游客一键体验）</span>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="01-拼音字母秘境/拼音字母秘境-合并版.html">
+      <div class="icon">🌲</div>
+      <h2>拼音字母秘境</h2>
+      <div class="role">儿童读写辅助训练系统 · 软著在申</div>
+      <div class="desc">针对读写障碍儿童「形似字母混淆」设计的四模块训练：搜索猎人、空格判断、填空魔法、魔法回音壁。支持训练人员自定义难度、时长、词库，自动记录正确率与作答时间。</div>
+      <div class="tags"><span class="tag">可玩性高</span><span class="tag">可配置训练</span><span class="tag">学习报告</span></div>
+      <div class="cta">🌲 进入体验（游客一键登录）</div>
+    </a>
+
+    <a class="card" href="02-报告自动化/">
+      <div class="icon">📊</div>
+      <h2>读写报告自动化</h2>
+      <div class="role">评估工具 · 流程自动化（Demo）</div>
+      <div class="desc">把「人工批改→人工对照常模→人工写报告」的旧流程，改造为「机器标注→自动换算→自动出报告→人工审核」。此处展示编号化名的样例报告与前端标注界面。</div>
+      <div class="tags"><span class="tag">流程改造</span><span class="tag">脱敏样例</span><span class="tag">标注演示</span></div>
+      <div class="cta">📊 进入体验</div>
+    </a>
+  </div>
+
+  <footer>
+    演示说明：02 中所有儿童姓名已编号化名（001-004），学校、出生日期均为虚构，错题截图已脱敏。<br>
+    作品版权归作者所有 · 未经许可请勿转载
+  </footer>
+</div>
+</body>
+</html>
